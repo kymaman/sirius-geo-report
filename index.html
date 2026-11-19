@@ -477,7 +477,8 @@ async function openCampaign() {
       row.dataset.status = 'complete';
       completed += 1;
       const labels = {present:run.rank ? 'SIRIUS №'+run.rank+' в списке' : 'SIRIUS упомянут · место не указано',
-        absent:'SIRIUS отсутствует · места нет',unclear:'Присутствие SIRIUS требует сверки'};
+        absent:run.reviewed ? 'SIRIUS отсутствует · места нет' : 'Название SIRIUS не найдено в тексте',
+        unclear:'Присутствие SIRIUS требует сверки'};
       label.textContent = labels[run.presence]+' · '+campaignTime.format(new Date(run.finished_at))+' МСК';
       if (run.recommendations?.length) renderSources(details,run.recommendations,'Рекомендации в порядке ответа',true);
       renderSources(details,run.cited,'Цитированные источники');
@@ -485,7 +486,7 @@ async function openCampaign() {
       details.hidden = false;
     }
     progress.textContent = 'Подтверждено '+completed+' из '+campaignRows.length+' · ожидают '+(campaignRows.length-completed-held)+
-      (held ? ' · без подтверждения '+held : '');
+      (held ? ' · без подтверждения '+held : '')+(data.state==='paused'?' · серия на паузе':'');
     $('campaignUpdate').textContent = 'Снимок '+campaignTime.format(new Date(data.updated_at))+' МСК. '+
       'Завершённый замер содержит ответ с подтверждённым веб-поиском. Место читается в тексте ответа. Цитированные и просмотренные сайты показаны отдельно.';
     $('campaignFilters').hidden = false;
